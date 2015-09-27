@@ -1,0 +1,51 @@
+
+<html>
+
+    <head>
+        <META HTTP-EQUIV="refresh" CONTENT="10">
+        <style>
+            body {margin: 0, padding: 0; }
+            ul { display: inline-block;  width: 96%; margin: 0 }
+            li { list-style: none; padding: 0; margin: 5px; background: lightgray; }
+            li {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                min-width:12%;
+                max-width:20%;
+                border:1px silver ridge;
+                float:left;
+                text-align:center;
+                line-height:50px;
+            }
+            .red { color: whitesmoke; background: darkred; }
+            .green { color: whitesmoke; background: darkgreen; }
+        </style>
+    </head>
+
+    <body>
+
+        <h1>PROD</h1>
+        <ul>
+            {% for project in projects_in_prod %}
+                <li class="{% if project.verify == 200 %}green{% else %}red{% endif %}">{{ project.name }}</li>
+            {% endfor %}
+        </ul>
+        <span style="clear:both"></span>
+
+        <h1>QA</h1>
+        <ul>
+            {% for project in projects_in_qa %}
+                <li class="{% if project.verify == 200 %}green{% else %}red{% endif %}">{{ project.name }}</li>
+            {% endfor %}
+        </ul>
+
+        <h1>DEV</h1>
+        <ul>
+            {% for project in projects_in_dev %}
+                <li class="{% if project.verify == 200 %}green{% else %}red{% endif %}">{{ project.name }}</li>
+            {% endfor %}
+        </ul>
+
+    </body>
+</html>
