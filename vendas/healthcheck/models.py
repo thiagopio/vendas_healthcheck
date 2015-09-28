@@ -21,3 +21,10 @@ class Project(models.Model):
             print 'Problem found in {0}: {1}'.format(self.url, err.message)
             status = 500
         return status
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'status': self.verify(),
+        }

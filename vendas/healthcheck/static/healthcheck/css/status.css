@@ -1,0 +1,16 @@
+body {margin: 0, padding: 0; }
+ul { display: inline-block;  width: 96%; margin: 0 }
+li { list-style: none; padding: 0; margin: 5px; background: lightgray; }
+li {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    min-width:12%;
+    max-width:20%;
+    border:1px silver ridge;
+    float:left;
+    text-align:center;
+    line-height:50px;
+}
+.project-red { color: whitesmoke; background: darkred; }
+.project-green { color: whitesmoke; background: darkgreen; }
