@@ -10,7 +10,7 @@ class Project(models.Model):
 
     @staticmethod
     def in_environment(env):
-        return Project.objects.filter(environment=env)
+        return Project.objects.filter(environment__iexact=env)
 
     def __unicode__(self):
         return u"{0} ({1})".format(self.name, self.environment)

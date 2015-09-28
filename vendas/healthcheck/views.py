@@ -18,7 +18,10 @@ def all_to_json(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 def projects_for_env_to_json(request, env):
-    return HttpResponse(json.dumps({}), content_type="application/json")
+    response = {
+        env: [project.to_json(False) for project in Project.in_environment(env)],
+    }
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 def project_to_json(request, id):
     project = get_object_or_404(Project, pk=id)
