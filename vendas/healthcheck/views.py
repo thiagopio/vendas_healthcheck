@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.http import HttpResponse
 from vendas.healthcheck.models import Project
@@ -10,9 +11,9 @@ def status(request):
 
 def all_to_json(request):
     response = {
-        'DEV': [project.to_json() for project in Project.in_environment('DEV')],
-        'QA': [project.to_json() for project in Project.in_environment('QA')],
-        'PROD': [project.to_json() for project in Project.in_environment('PROD')]
+        'DEV': [project.to_json(False) for project in Project.in_environment('DEV')],
+        'QA': [project.to_json(False) for project in Project.in_environment('QA')],
+        'PROD': [project.to_json(False) for project in Project.in_environment('PROD')]
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 

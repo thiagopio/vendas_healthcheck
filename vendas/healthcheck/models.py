@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 import requests
+
 
 class Project(models.Model):
     name = models.CharField(max_length=50)
@@ -11,7 +13,7 @@ class Project(models.Model):
         return Project.objects.filter(environment=env)
 
     def __unicode__(self):
-        return "{0} ({1})".format(self.name, self.environment)
+        return u"{0} ({1})".format(self.name, self.environment)
 
     def verify(self):
         try:
@@ -22,9 +24,9 @@ class Project(models.Model):
             status = 500
         return status
 
-    def to_json(self):
+    def to_json(self, with_verify=True):
         return {
             'id': self.id,
             'name': self.name,
-            'status': self.verify(),
+            'status': self.verify() if with_verify else 404,
         }

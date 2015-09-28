@@ -14,7 +14,10 @@ var Healthcheck = (function(){
 
     update_status_class = function($html, data){
         var status_class = verify_status_class(data.status);
-        $html.removeClass('project-red', 'project-green').addClass(status_class);
+        $html.removeClass(ok_class, problem_class);
+        if (data.status != 404) {
+            $html.addClass(status_class);
+        }
         update_project_name($html, data);
     };
 
@@ -26,34 +29,32 @@ var Healthcheck = (function(){
         }
     };
 
-    replace_info_for = function(data){
-        $html_clone = $html_site.clone();
-        update_status_class($html_clone, data);
-        $html_clone.addClass('project');
-        $html_clone.data('project-id', data.id);
-        return $html_clone;
-    };
-
     refresh_status = function(){
         $.each($('.project'), function(key, project_tag){
             var $project = $(project_tag);
             var project_id = $project.data('project-id');
             $.getJSON( '/healthcheck/project/' + project_id + '/json/', function( response ) {
-                console.log('updating... ', response);
                 update_status_class($project, response)
             });
         });
         setTimeout(function(){ refresh_status() }, refresh_status_time);
-        console.log('loading one more time... ' + (refresh_status_time / 1000) + ' seconds');
+    };
+
+    create_box_for = function(data){
+        $html_clone = $html_site.clone();
+        $html_clone.addClass('project');
+        $html_clone.data('project-id', data.id);
+        update_status_class($html_clone, data);
+        return $html_clone;
     };
 
     init = function(){
-        $.getJSON( "/healthcheck/projects/all/json/", function( data ) {
-            $.each(data, function(env, projects){
-                var title = '<h1>' + env + '</h1>';
+        $.getJSON( "/healthcheck/projects/all/json/", function( environment ) {
+            $.each(environment, function(env, projects){
+                var title = '<h2>' + env + '</h2>';
                 var $html = $html_ul.clone().attr('id', env);
                 $.each(projects, function(key, project) {
-                    $project_item = replace_info_for(project)
+                    $project_item = create_box_for(project);
                     $html.append($project_item);
                 });
                 $('body').append(title, $html);
