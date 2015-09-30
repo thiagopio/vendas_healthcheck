@@ -19,14 +19,18 @@ class Project(models.Model):
         try:
             response = requests.get(self.url, timeout=1)
             status = response.status_code
+            content = response.text
         except Exception as err:
             print 'Problem found in {0}: {1}'.format(self.url, err.message)
             status = 500
-        return status
+            content = ''
+        return status, content
 
     def to_json(self, with_verify=True):
+        status, content = self.verify() if with_verify else (404, '')
         return {
             'id': self.id,
             'name': self.name,
-            'status': self.verify() if with_verify else 404,
+            'status': status,
+            'content': content
         }
