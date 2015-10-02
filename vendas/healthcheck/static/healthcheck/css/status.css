@@ -1,19 +1,27 @@
-body {margin: 0, padding: 0; }
+body {margin: 0, padding: 0; font-size: 16px; }
 ul { display: inline-block;  width: 96%; margin: 0 }
 li {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     list-style: none;
-    padding: 0 5px;
     margin: 5px;
+    padding: 10px 5px;
     background: lightgray;
     min-width: 130px;
     max-width: 30%;
     border: 1px silver ridge;
     float: left;
     text-align: center;
-    line-height: 50px;
+    line-height: 40px;
+    height: 75px;
+}
+li small {
+    display: block;
+    line-height: 10px;
+    text-transform: lowercase;
+    font-size: 0.8em;
 }
 .project-red { color: whitesmoke; background: darkred; }
 .project-green { color: whitesmoke; background: darkgreen; }
+.project-yellow { color: whitesmoke; background: darkgoldenrod; }

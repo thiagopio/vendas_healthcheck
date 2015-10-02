@@ -7,6 +7,7 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     url = models.URLField(max_length=100)
     environment = models.CharField(max_length=10, choices=(('DEV', 'DEV'), ('QA', 'QA'), ('PROD', 'PROD')))
+    related_project = models.ManyToManyField('Project')
 
     @staticmethod
     def in_environment(env):
@@ -15,9 +16,12 @@ class Project(models.Model):
     def __unicode__(self):
         return u"{0} ({1})".format(self.name, self.environment)
 
+    def dependependents_size(self):
+        return len(self.related_project.all())
+
     def verify(self):
         try:
-            response = requests.get(self.url, timeout=1)
+            response = requests.get(self.url, timeout=2)
             status = response.status_code
             content = response.text
         except Exception as err:
@@ -32,5 +36,5 @@ class Project(models.Model):
             'id': self.id,
             'name': self.name,
             'status': status,
-            'content': content
+            'dependents_ids': [project.id for project in self.related_project.all()]
         }
