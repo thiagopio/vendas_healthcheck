@@ -16,7 +16,7 @@ class Project(models.Model):
     def __unicode__(self):
         return u"{0} ({1})".format(self.name, self.environment)
 
-    def dependependents_size(self):
+    def dependents_size(self):
         return len(self.related_project.all())
 
     def verify(self):

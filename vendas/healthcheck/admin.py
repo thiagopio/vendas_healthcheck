@@ -4,7 +4,7 @@ from vendas.healthcheck.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'url', 'dependependents_size')
+    list_display = ('__unicode__', 'url', 'dependents_size')
     list_filter = ['environment',]
     search_fields = ['name',]
     ordering = ('name',)
