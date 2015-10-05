@@ -1,7 +1,7 @@
 /**
  * Created by thiago.pio on 9/27/15.
  */
-(function(){
+ var healthcheck = function(){
     $html_ul = $('<ul></ul>');
     $html_site = $('<li>{url}</li>');
     refresh_status_time = 5000;
@@ -88,5 +88,7 @@
         });
     };
 
-    return init();
-}());
+    return {
+        'init': init
+    }
+ }();
