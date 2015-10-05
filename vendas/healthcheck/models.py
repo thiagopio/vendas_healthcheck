@@ -7,7 +7,7 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     url = models.URLField(max_length=100)
     environment = models.CharField(max_length=10, choices=(('DEV', 'DEV'), ('QA', 'QA'), ('PROD', 'PROD')))
-    related_project = models.ManyToManyField('Project')
+    related_project = models.ManyToManyField('Project', blank=True)
 
     @staticmethod
     def in_environment(env):
