@@ -89,6 +89,11 @@
     };
 
     return {
+        'attr_ok_class': ok_class,
+        'attr_problem_class': problem_class,
+        'fn_verify_status_class': verify_status_class,
+        'fn_create_box_for': create_box_for,
+        'fn_update_project_name': update_project_name,
         'init': init
     }
  }();
