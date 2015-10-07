@@ -22,7 +22,7 @@ class Project(models.Model):
         try:
             for status_response in self.statusresponse_set.all():
                 status = status_response.check()
-                if status != 200:
+                if status != status_response.status:
                     return status
         except Exception as err:
             print 'Problem found: {}'.format(err.message)
@@ -48,9 +48,15 @@ class StatusResponse(models.Model):
     content = models.CharField(max_length=200, blank=True)
 
     def check(self):
+        response = None
         try:
-            response = requests.get(self.url, timeout=2)
+            if self.method == 'GET':
+                response = requests.get(self.url, timeout=2)
             status = response.status_code
         except Exception as err:
             status = 500
+            print err
+        return status
+        # requests.codes.ok
+        # response.raise_for_status()
 
