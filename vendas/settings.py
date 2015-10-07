@@ -129,9 +129,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'polymorphic',
+    # 'polymorphic',
     'vendas.healthcheck',
-    'django_jasmine'
+    'django_jasmine',
+    'south'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

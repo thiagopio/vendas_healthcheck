@@ -6,7 +6,7 @@ from django.test.client import Client
 class ModelTestCase(TestCase):
 
 	def setUp(self):
-		self.project = Project(name='Project Name', url='http://globo.com', environment='DEV')
+		self.project = Project(name='Project Name', environment='DEV')
 		self.project.save()
 	
 	def test_to_json(self):
@@ -23,7 +23,7 @@ class ModelTestCase(TestCase):
 class ViewsTestCase(TestCase):
 
 	def setUp(self):
-		self.project = Project(name='Project Name', url='http://globo.com', environment='DEV')
+		self.project = Project(name='Project Name', environment='DEV')
 		self.project.save()
 		self.client = Client()
 

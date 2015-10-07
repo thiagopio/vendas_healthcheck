@@ -9,3 +9,6 @@ migrate:
 
 run:
 	docker-compose up
+
+test:
+	docker-compose run web python manage.py test healthcheck

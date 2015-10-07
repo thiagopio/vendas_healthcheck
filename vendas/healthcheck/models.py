@@ -5,7 +5,6 @@ import requests
 
 class Project(models.Model):
     name = models.CharField(max_length=50)
-    url = models.URLField(max_length=100)
     environment = models.CharField(max_length=10, choices=(('DEV', 'DEV'), ('QA', 'QA'), ('PROD', 'PROD')))
     related_project = models.ManyToManyField('Project', blank=True)
 
@@ -21,20 +20,37 @@ class Project(models.Model):
 
     def verify(self):
         try:
-            response = requests.get(self.url, timeout=2)
-            status = response.status_code
-            content = response.text
+            for status_response in self.statusresponse_set.all():
+                status = status_response.check()
+                if status != 200:
+                    return status
         except Exception as err:
-            print 'Problem found in {0}: {1}'.format(self.url, err.message)
+            print 'Problem found: {}'.format(err.message)
             status = 500
-            content = ''
-        return status, content
+        return status
 
     def to_json(self, with_verify=True):
-        status, content = self.verify() if with_verify else (404, '')
+        status = self.verify() if with_verify else 404
         return {
             'id': self.id,
             'name': self.name,
             'status': status,
             'dependents_ids': [project.id for project in self.related_project.all()]
         }
+
+class StatusResponse(models.Model):
+    project = models.ForeignKey(Project)
+    name = models.CharField(max_length=50)
+    url = models.URLField(max_length=100)
+    response_type = models.CharField(max_length=10, choices=(('STATUS', 'Status'), ('TEXT', 'Text'),))
+    method = models.CharField(max_length=10, choices=(('GET', 'GET'),))
+    status = models.PositiveSmallIntegerField(blank=False)
+    content = models.CharField(max_length=200, blank=True)
+
+    def check(self):
+        try:
+            response = requests.get(self.url, timeout=2)
+            status = response.status_code
+        except Exception as err:
+            status = 500
+
