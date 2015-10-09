@@ -62,7 +62,7 @@
             $.getJSON( '/healthcheck/project/' + project_id + '/json/', function( response ) {
                 update_status_class($project, response)
             });
-        });verify_dependents
+        });
         setTimeout(function(){ refresh_status() }, refresh_status_time);
     };
 
