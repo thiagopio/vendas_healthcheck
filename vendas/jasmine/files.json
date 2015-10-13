@@ -1,5 +1,5 @@
 {
-    "name": "Main Test Suite",
+    "name": "Healthcheck Test Suite",
     "js_files": [
       "/static/healthcheck/js/jquery-2.1.4.min.js",
       "/static/healthcheck/js/healthcheck.js"
