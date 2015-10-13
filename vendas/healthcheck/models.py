@@ -19,22 +19,21 @@ class Project(models.Model):
         return len(self.related_project.all())
 
     def verify(self):
-        try:
-            for status_response in self.statusresponse_set.all():
-                status = status_response.check()
-                if status != status_response.status:
-                    return status
-        except Exception as err:
-            print 'Problem found: {}'.format(err.message)
-            status = 500
-        return status
+        working, status = (False, None)
+        for expected_response in self.statusresponse_set.all():
+            working, status = expected_response.check()
+            if working == False:
+                return working, status
+            # print expected_response.url, expected_response.status, status
+        return working, status
 
     def to_json(self, with_verify=True):
-        status = self.verify() if with_verify else 404
+        working, status = self.verify() if with_verify else (False, requests.codes.NOT_FOUND)
         return {
             'id': self.id,
             'name': self.name,
             'status': status,
+            'working': working,
             'dependents_ids': [project.id for project in self.related_project.all()]
         }
 
@@ -48,15 +47,21 @@ class StatusResponse(models.Model):
     content = models.CharField(max_length=200, blank=True)
 
     def check(self):
-        response = None
+        working, response = False, None
         try:
             if self.method == 'GET':
                 response = requests.get(self.url, timeout=2)
-            status = response.status_code
-        except Exception as err:
-            status = 500
-            print err
-        return status
-        # requests.codes.ok
-        # response.raise_for_status()
+                working, status = self.status_successful(response.status_code)
+            else:
+                raise Exception("Method '{}' not implemented".format(self.method))
 
+        except Exception as err:
+            # print ">> Problem found: {}".format(err)
+            working, status = working, requests.codes.SERVER_ERROR
+        return working, status
+
+    def status_successful(self, status_from_response):
+        if status_from_response == self.status:
+            return True, status_from_response
+        else:
+            return False, status_from_response

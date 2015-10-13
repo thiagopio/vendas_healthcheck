@@ -2,21 +2,22 @@ describe("Healthcheck", function() {
   var h, json_project;
 
   beforeEach(function() {
+    // http://www.michaelfalanga.com/2014/04/03/mock-jquery-ajax-calls-with-jasmine/
    h = healthcheck;
-   json_project = {"status": 200, "dependents_ids": [], "id": 1, "name": "google"};
+   json_project = {"status": 200, "working": true, "dependents_ids": [], "id": 1, "name": "google"};
   });
 
   describe("when verify status class", function() {
-    it("should return problem class", function() {
-      expect(h.verify_status_class(500)).toEqual(h.problem_class);
+    it("should return problem_class for status != 200", function() {
+      expect(h.verify_status_class(false)).toEqual(h.problem_class);
     });
-    it("should return ok class", function() {
-      expect(h.verify_status_class(200)).toEqual(h.ok_class);
+    it("should return ok_class for status == 200", function() {
+      expect(h.verify_status_class(true)).toEqual(h.ok_class);
     });
   });
 
   describe("when create box", function() {
-    it("shoud return html", function() {
+    it("shoud return html with project information", function() {
       html_expected = '<li class="project project-green" data-pk="1" data-name="google">google</li>';
       $html_returned = h.create_box_for(json_project);
       expect($html_returned).toHaveClass('project ' + h.ok_class);

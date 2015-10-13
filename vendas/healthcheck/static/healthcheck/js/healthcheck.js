@@ -11,10 +11,6 @@
     local_id = 'body',
     refresh_status_time = 5000;
 
-    public.verify_status_class = function(status){
-        return status == 200 ? public.ok_class : public.problem_class;
-    };
-
     verify_dependents = function(data, status_class){
         var $dependent, $current = $('li[data-pk=' + data.id + ']');
         $current.attr('data-problem-pk', null);
@@ -30,7 +26,7 @@
     };
 
     update_status_class = function($html, data){
-        var status_class = public.verify_status_class(data.status);
+        var status_class = public.verify_status_class(data.working);
         $html.removeClass(public.ok_class);
         $html.removeClass(public.problem_class);
         $html.removeClass(public.warn_class);
@@ -39,20 +35,6 @@
             $html.addClass(status_class);
         }
         public.update_project_name($html, data);
-    };
-
-    public.update_project_name = function($html, data){
-        var $problem_project, problem_project_id;
-        if (data.status == 200) {
-            $html.text(data.name);
-            problem_project_id = $html.attr('data-problem-pk');
-            if (problem_project_id !== undefined){
-                $problem_project = $('li[data-pk=' + problem_project_id + ']');
-                $html.append('<small>' + $problem_project.data('name') + '</small>');
-            }
-        } else {
-            $html.text(data.name + ' (' + data.status + ')');
-        }
     };
 
     refresh_status = function(){
@@ -64,6 +46,24 @@
             });
         });
         setTimeout(function(){ refresh_status() }, refresh_status_time);
+    };
+
+    public.verify_status_class = function(status){
+        return status == true ? public.ok_class : public.problem_class;
+    };
+
+    public.update_project_name = function($html, data){
+        var $problem_project, problem_project_id;
+        if (data.working == true) {
+            $html.text(data.name);
+            problem_project_id = $html.attr('data-problem-pk');
+            if (problem_project_id !== undefined){
+                $problem_project = $('li[data-pk=' + problem_project_id + ']');
+                $html.append('<small>' + $problem_project.data('name') + '</small>');
+            }
+        } else {
+            $html.text(data.name + ' (' + data.status + ')');
+        }
     };
 
     public.create_box_for = function(data){
