@@ -28,7 +28,7 @@ class ProjectTestCase(TestCase):
 class StatusResponseTestCase(TestCase):
 
     def setUp(self):
-        self.status_response = StatusResponse(url='http://mock.info', status=201, method='GET')
+        self.status_response = StatusResponse(url='http://mock.info', status=201, method='GET', response_type='STATUS')
 
     @requests_mock.mock()
     def test_check(self, mock):
@@ -44,7 +44,7 @@ class ViewsTestCase(TestCase):
 
     def setUp(self):
         self.project = Project.objects.create(name='Project Name', environment='DEV')
-        StatusResponse.objects.create(project=self.project, url='http://mock.info', status=200, method='GET')
+        StatusResponse.objects.create(project=self.project, url='http://mock.info', status=200, method='GET', response_type='STATUS')
         self.client = Client()
 
     def test_uri_all_projects(self):

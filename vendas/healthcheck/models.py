@@ -62,6 +62,6 @@ class StatusResponse(models.Model):
 
     def status_successful(self, status_from_response):
         if status_from_response == self.status:
-            return True, status_from_response
-        else:
-            return False, status_from_response
+            if self.response_type == 'STATUS':
+                return True, status_from_response
+        return False, status_from_response
