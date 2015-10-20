@@ -30,7 +30,7 @@
         $html.removeClass(public.ok_class);
         $html.removeClass(public.problem_class);
         $html.removeClass(public.warn_class);
-        if (data.status != 404) {
+        if (data.info != 404) {
             status_class = verify_dependents(data, status_class);
             $html.addClass(status_class);
         }
@@ -60,9 +60,11 @@
             if (problem_project_id !== undefined){
                 $problem_project = $('li[data-pk=' + problem_project_id + ']');
                 $html.append('<small>' + $problem_project.data('name') + '</small>');
+            } else if (String(data.info).startsWith('+')){
+                $html.append('<small>' + data.info.replace('+', '') + '</small>');
             }
         } else {
-            $html.text(data.name + ' (' + data.status + ')');
+            $html.text(data.name + ' (' + data.info + ')');
         }
     };
 

@@ -20,19 +20,19 @@ class Project(models.Model):
         return len(self.related_project.all())
 
     def verify(self):
-        working, status = (False, None)
+        working, info = (False, None)
         for expected_response in self.statusresponse_set.all():
-            working, status = expected_response.check()
+            working, info = expected_response.check()
             if working is False:
-                return working, status
-        return working, status
+                return working, info
+        return working, info
 
     def to_json(self, with_verify=True):
-        working, status = self.verify() if with_verify else (False, requests.codes.NOT_FOUND)
+        working, info = self.verify() if with_verify else (False, requests.codes.NOT_FOUND)
         return {
             'id': self.id,
             'name': self.name,
-            'status': status,
+            'info': info,
             'working': working,
             'dependents_ids': [project.id for project in self.related_project.all()]
         }
@@ -50,17 +50,17 @@ class StatusResponse(models.Model):
     content = models.CharField(max_length=200, blank=True)
 
     def check(self):
-        working, response = False, None
+        working, info = False, None
         try:
             if self.method == 'GET':
                 response = requests.get(self.url, timeout=2)
-                working, status = self.status_successful(response)
+                working, info = self.status_successful(response)
             else:
                 raise Exception("Method '{}' not implemented".format(self.method))
 
         except Exception:
-            working, status = working, requests.codes.SERVER_ERROR
-        return working, status
+            working, info = working, requests.codes.SERVER_ERROR
+        return working, info
 
     def status_successful(self, response):
         status_from_response = response.status_code
@@ -78,6 +78,6 @@ class StatusResponse(models.Model):
                 return same_content, response_extra.text
 
             elif self.response_type == 'REGEX':
-                return True, re.search(self.content, response.text).group(1)
+                return True, '+{}'.format(re.search(self.content, response.text).group(1))
 
         return False, status_from_response

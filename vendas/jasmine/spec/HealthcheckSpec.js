@@ -4,14 +4,14 @@ describe("Healthcheck", function() {
   beforeEach(function() {
     // http://www.michaelfalanga.com/2014/04/03/mock-jquery-ajax-calls-with-jasmine/
    h = healthcheck;
-   json_project = {"status": 200, "working": true, "dependents_ids": [], "id": 1, "name": "google"};
+   json_project = {"info": 200, "working": true, "dependents_ids": [], "id": 1, "name": "google"};
   });
 
   describe("when verify status class", function() {
-    it("should return problem_class for status != 200", function() {
+    it("should return problem_class for working is false", function() {
       expect(h.verify_status_class(false)).toEqual(h.problem_class);
     });
-    it("should return ok_class for status == 200", function() {
+    it("should return ok_class for working is true", function() {
       expect(h.verify_status_class(true)).toEqual(h.ok_class);
     });
   });

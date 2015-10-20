@@ -20,7 +20,7 @@ li small {
     display: block;
     line-height: 10px;
     text-transform: lowercase;
-    font-size: 0.8em;
+    font-size: 1.5em;
 }
 .project-red { color: whitesmoke; background: darkred; }
 .project-green { color: whitesmoke; background: darkgreen; }
