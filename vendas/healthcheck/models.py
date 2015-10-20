@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 import requests
+import re
 
 
 class Project(models.Model):
@@ -22,9 +23,8 @@ class Project(models.Model):
         working, status = (False, None)
         for expected_response in self.statusresponse_set.all():
             working, status = expected_response.check()
-            if working == False:
+            if working is False:
                 return working, status
-            # print expected_response.url, expected_response.status, status
         return working, status
 
     def to_json(self, with_verify=True):
@@ -37,11 +37,14 @@ class Project(models.Model):
             'dependents_ids': [project.id for project in self.related_project.all()]
         }
 
+
 class StatusResponse(models.Model):
+    OPTIONS = (('STATUS', 'Status'), ('TEXT', 'Text'), ('URL', 'Other Url'), ('REGEX', 'Regex'))
+
     project = models.ForeignKey(Project)
     name = models.CharField(max_length=50)
     url = models.URLField(max_length=100)
-    response_type = models.CharField(max_length=10, choices=(('STATUS', 'Status'), ('TEXT', 'Text'),))
+    response_type = models.CharField(max_length=10, choices=OPTIONS)
     method = models.CharField(max_length=10, choices=(('GET', 'GET'),))
     status = models.PositiveSmallIntegerField(blank=False)
     content = models.CharField(max_length=200, blank=True)
@@ -51,17 +54,30 @@ class StatusResponse(models.Model):
         try:
             if self.method == 'GET':
                 response = requests.get(self.url, timeout=2)
-                working, status = self.status_successful(response.status_code)
+                working, status = self.status_successful(response)
             else:
                 raise Exception("Method '{}' not implemented".format(self.method))
 
-        except Exception as err:
-            # print ">> Problem found: {}".format(err)
+        except Exception:
             working, status = working, requests.codes.SERVER_ERROR
         return working, status
 
-    def status_successful(self, status_from_response):
+    def status_successful(self, response):
+        status_from_response = response.status_code
         if status_from_response == self.status:
             if self.response_type == 'STATUS':
                 return True, status_from_response
+
+            elif self.response_type == 'TEXT':
+                same_content = self.content == response.text
+                return same_content, response.text
+
+            elif self.response_type == 'URL':
+                response_extra = requests.get(self.content, timeout=2)
+                same_content = response.text == response_extra.text
+                return same_content, response_extra.text
+
+            elif self.response_type == 'REGEX':
+                return True, re.search(self.content, response.text).group(1)
+
         return False, status_from_response
