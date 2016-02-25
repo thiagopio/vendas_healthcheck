@@ -9,7 +9,7 @@
     $html_ul = $('<ul></ul>'),
     $html_site = $('<li>{url}</li>'),
     local_id = 'body',
-    refresh_status_time = 5000;
+    refresh_status_time = 10000;
 
     verify_dependents = function(data, status_class){
         var $dependent, $current = $('li[data-pk=' + data.id + ']');

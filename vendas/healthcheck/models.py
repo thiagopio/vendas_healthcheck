@@ -53,7 +53,7 @@ class StatusResponse(models.Model):
         working, info = False, None
         try:
             if self.method == 'GET':
-                response = requests.get(self.url, timeout=2)
+                response = requests.get(self.url, timeout=2, verify=False)
                 working, info = self.status_successful(response)
             else:
                 raise Exception("Method '{}' not implemented".format(self.method))
@@ -73,7 +73,7 @@ class StatusResponse(models.Model):
                 return same_content, response.text
 
             elif self.response_type == 'URL':
-                response_extra = requests.get(self.content, timeout=2)
+                response_extra = requests.get(self.content, timeout=2, verify=False)
                 same_content = response.text == response_extra.text
                 return same_content, response_extra.text
 
